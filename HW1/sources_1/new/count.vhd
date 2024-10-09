@@ -1,3 +1,4 @@
+
 -- Company:
 -- Engineer:
 --
@@ -45,10 +46,26 @@ architecture Behavioral of counter is
 signal count1:STD_LOGIC_VECTOR(3 downto 0);
 signal count2:STD_LOGIC_VECTOR(3 downto 0);
 signal state:STD_LOGIC;
+signal divclk:STD_LOGIC_VECTOR(26 downto 0);
+signal fclk:STD_LOGIC;
 begin
 
 o_count1 <= count1;
 o_count2 <= count2;
+
+fd:process(i_clk ,i_rst)
+begin
+if (i_rst = '0') then 
+    divclk <= (others => '0');
+elsif (rising_edge(i_clk)) then
+    divclk <= divclk +1 ;
+end if;
+end process fd;
+fclk <= divclk(25);      
+            
+
+
+
 
 FSM:process(i_clk, i_rst)
 begin
@@ -70,11 +87,11 @@ begin
       end if;
 end process;
    
-counter1p:process(i_clk, i_rst, state)
+counter1p:process(fclk, i_rst, state)
 begin
     if i_rst = '0' then
         count1 <= "0000";
-    elsif i_clk'event and i_clk ='1' then
+    elsif fclk'event and fclk ='1' then
         case state is
             when '0' =>
                 count1 <= count1 + '1';
@@ -86,11 +103,11 @@ begin
       end if;
 end process;
 
-counter2p:process(i_clk, i_rst, state)
+counter2p:process(fclk, i_rst, state)
 begin
     if i_rst = '0' then
         count2 <= "1111";
-    elsif i_clk'event and i_clk ='1' then
+    elsif fclk'event and fclk ='1' then
         case state is
             when '0' =>
                 null;
