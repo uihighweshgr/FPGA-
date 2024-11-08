@@ -1,5 +1,5 @@
-# HW1  counter
-https://www.youtube.com/shorts/73Q8eGjqQkQ
+# HW1  [counter](https://www.youtube.com/shorts/73Q8eGjqQkQ)
+
 
 # HW2
 
