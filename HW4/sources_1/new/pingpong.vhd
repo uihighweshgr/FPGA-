@@ -19,6 +19,8 @@ signal right_score      : STD_LOGIC_VECTOR(3 downto 0);
 signal left_score       : STD_LOGIC_VECTOR(3 downto 0);
 signal divclk           :STD_LOGIC_VECTOR(26 downto 0);
 signal led_clk          :STD_LOGIC;
+signal left_button          :STD_LOGIC;
+signal right_button          :STD_LOGIC;
 type counter_state is (reserve,counter_is_counting_left, counter_is_counting_right,left_win,right_win,left_ready_serve,right_ready_serve);
 signal counter_move_state: counter_state;
 signal prestate: counter_state;
@@ -28,28 +30,30 @@ o_count <= count;
 
 led_move_state :process (i_clk , i_rst , i_left_button , i_right_button)
 begin
-    if  i_rst = '0'  then --初始右發球
+    if  i_rst = '0'  then --???l?k?o?y
             counter_move_state <= reserve;
     elsif i_clk' event and i_clk = '1' then
         prestate <= counter_move_state;
+        left_button <=  i_left_button;
+        right_button <= i_right_button;
         case counter_move_state is 
             when counter_is_counting_left =>
-                if (count = "10000000") and (i_left_button = '1') then --左打到
+                if (count = "10000000") and (i_left_button = '1') then --??????
                     counter_move_state <= counter_is_counting_right;             
-                elsif (i_left_button = '0' and count = "00000000") or (count<"10000000" and i_left_button='1') then --左沒打到
+                elsif (i_left_button = '0' and count = "00000000") or (count<"10000000" and i_left_button='1') then --???S????
                     counter_move_state <= right_win;   
                 end if;                   
             when counter_is_counting_right =>
-                if (count = "00000001") and (i_right_button = '1') then --右打到
+                if (count = "00000001") and (i_right_button = '1') then --?k????
                     counter_move_state <= counter_is_counting_left;
-                elsif (i_right_button = '0' and count = "00000000") or (i_right_button = '1' and count > "00000001") then --右沒打到
+                elsif (i_right_button = '0' and count = "00000000") or (i_right_button = '1' and count > "00000001") then --?k?S????
                     counter_move_state <= left_win;
                 end if;    
             when right_win =>
                 if count = (left_score(0)&left_score(1)&left_score(2)&left_score(3)) & right_score then
                     counter_move_state <= reserve;
                 end if;
-                --if i_left_button = '1' then --左預備發球
+                --if i_left_button = '1' then 
                 --    counter_move_state <= left_ready_serve;
                 --end if;                           
             when left_win =>
@@ -57,17 +61,17 @@ begin
                     counter_move_state <= reserve;
                 end if;
             when left_ready_serve =>
-                if count = "10000000" then --左發球
+                if count = "10000000" then --???o?y
                     counter_move_state <= counter_is_counting_right;
                 end if;                           
             when right_ready_serve =>
-                if count = "00000001" then --右發球
+                if count = "00000001" then --?k?o?y
                     counter_move_state <= counter_is_counting_left;
                 end if;
             when reserve =>
-                if i_left_button = '1' then
+                if i_left_button = '1' and left_button ='0' then
                     counter_move_state <= left_ready_serve;
-                elsif i_right_button = '1' then 
+                elsif i_right_button = '1'and right_button ='0' then 
                     counter_move_state <= right_ready_serve;
                 else
                     counter_move_state <= reserve;
@@ -81,21 +85,21 @@ end process;
 counter :process (i_clk , i_rst)
 begin
     if i_rst = '0' then
-        count <= "00000000";--count初始直 
+        count <= "00000000";--count???l?? 
     elsif led_clk' event and led_clk = '1' then
         case counter_move_state is 
             when counter_is_counting_left =>
-                count <= count(6 downto 0) & '0'; --左移
+                count <= count(6 downto 0) & '0'; --????
             when counter_is_counting_right =>
-                count <= '0' & count(7 downto 1); --右移
+                count <= '0' & count(7 downto 1); --?k??
             when right_win =>
-                count <= (left_score(0)&left_score(1)&left_score(2)&left_score(3)) & right_score; --看分數                         
+                count <= (left_score(0)&left_score(1)&left_score(2)&left_score(3)) & right_score; --??????                         
             when left_win =>    
-                count <= (left_score(0)&left_score(1)&left_score(2)&left_score(3)) & right_score;  --看分數
+                count <= (left_score(0)&left_score(1)&left_score(2)&left_score(3)) & right_score;  --??????
             when left_ready_serve =>
-                count <= "10000000"; --左初始直                          
+                count <= "10000000"; --?????l??                          
             when right_ready_serve =>
-                count <= "00000001"; --右初始直
+                count <= "00000001"; --?k???l??
             when others =>
                 null;
         end case;
@@ -105,7 +109,7 @@ end process;
 count_score : process (i_clk, i_rst)
 begin
     if i_rst = '0' then
-        right_score <= "0000"; -- 初始化 score
+        right_score <= "0000"; -- ???l?? score
         left_score  <= "0000"; 
     elsif i_clk' event and i_clk = '1' then
         case counter_move_state is  
@@ -115,7 +119,6 @@ begin
                 null; 
             when right_win =>
                 if prestate = counter_is_counting_left then
-                
                     right_score <= right_score + '1'; --right_win  
                 else
                     right_score <= right_score;
