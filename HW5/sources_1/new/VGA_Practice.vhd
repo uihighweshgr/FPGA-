@@ -61,7 +61,7 @@ begin
     --    if ( (h_count - 320) * (h_count - 320) ) +(  (v_count - 240) * (v_count - 240) ) <= 100 * 100 then
 process(fclk, rst_n)
     begin    
-   if ( (h_count - 480) * (h_count - 480) ) +(  (v_count - 360) * (v_count - 360) ) <= 100 * 100 then
+   if ( (h_count - 480) * (h_count - 480) ) +(  (v_count - 360) * (v_count - 360) ) <=15 * 20 then
         red   <= "0000";
         green <= "1111";  -- ºñ¦â¶ê§Î
         blue  <= "0000";
