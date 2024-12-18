@@ -30,6 +30,7 @@ signal prestate: counter_state;
     
     signal   x: integer;
     -- VGA參數定義 (640x480解析度，60Hz刷新率)
+    constant xplus         : integer := 100;
     constant H_SYNC_CYCLES : integer := 96;  -- 水平同步脈寬
     constant H_BACK_PORCH : integer := 48;   -- 水平後座標
     constant H_ACTIVE_VIDEO : integer := 640; -- 顯示區寬度
@@ -80,14 +81,14 @@ o_count <= count;
             blue  <= "0000";  -- 初始為黑色
         elsif rising_edge(fclk) then
             -- 圓心位置 (480, 360)，半徑 15
-            if ( (h_count - x) * (h_count - x) + (v_count - 360) * (v_count - 360) <= 15 * 15 ) then
+            if ( (  h_count - x -xplus) * ( h_count - x-xplus) + (v_count - 360) * (v_count - 360) <= 15 * 15 ) then
                 red   <= "0000";         -- 紅色為 0000
                 green <= "1111";         -- 綠色為 1111
                 blue  <= "0000";         -- 藍色為 0000
             else
-                red   <= "0000";         -- 默認為黑色
-                green <= "0000";         -- 默認為黑色
-                blue  <= "0000";         -- 默認為黑色
+                red   <= "0100";         -- 默認為黑色
+                green <= "1000";         -- 默認為黑色
+                blue  <= "0011";         -- 默認為黑色
             end if;
         end if;
     end process;
