@@ -4,31 +4,31 @@ use IEEE.std_logic_unsigned.ALL;
 use IEEE.std_logic_arith.ALL;
 
 entity vga_controller is
-    Port ( clk       : in  STD_LOGIC;       -- FPGA®ÉÄÁ
-           rst_n     : in  STD_LOGIC;       -- ­«¸m«H¸¹
-           hsync     : out STD_LOGIC;       -- ¤ô¥­¦P¨B«H¸¹
-           vsync     : out STD_LOGIC;       -- ««ª½¦P¨B«H¸¹
-           red       : out STD_LOGIC_VECTOR (3 downto 0);  -- ¬õ¦âÃC¦â¤À¶q
-           green     : out STD_LOGIC_VECTOR (3 downto 0);  -- ºñ¦âÃC¦â¤À¶q
-           blue      : out STD_LOGIC_VECTOR (3 downto 0)   -- ÂÅ¦âÃC¦â¤À¶q
+    Port ( clk       : in  STD_LOGIC;       -- FPGAæ™‚é˜
+           rst_n     : in  STD_LOGIC;       -- é‡ç½®ä¿¡è™Ÿ
+           hsync     : out STD_LOGIC;       -- æ°´å¹³åŒæ­¥ä¿¡è™Ÿ
+           vsync     : out STD_LOGIC;       -- å‚ç›´åŒæ­¥ä¿¡è™Ÿ
+           red       : out STD_LOGIC_VECTOR (3 downto 0);  -- ç´…è‰²é¡è‰²åˆ†é‡
+           green     : out STD_LOGIC_VECTOR (3 downto 0);  -- ç¶ è‰²é¡è‰²åˆ†é‡
+           blue      : out STD_LOGIC_VECTOR (3 downto 0)   -- è—è‰²é¡è‰²åˆ†é‡
            );
 end vga_controller;
 
 architecture Behavioral of vga_controller is
-    -- VGA°Ñ¼Æ©w¸q (640x480¸ÑªR«×¡A60Hz¨ê·s²v)
-    constant H_SYNC_CYCLES : integer := 96;  -- ¤ô¥­¦P¨B¯ß¼e
-    constant H_BACK_PORCH : integer := 48;   -- ¤ô¥­«á®y¼Ğ
-    constant H_ACTIVE_VIDEO : integer := 640; -- Åã¥Ü°Ï¼e«×
-    constant H_FRONT_PORCH : integer := 16;  -- ¤ô¥­«e®y¼Ğ
-    constant V_SYNC_CYCLES : integer := 2;   -- ««ª½¦P¨B¯ß¼e
-    constant V_BACK_PORCH : integer := 33;   -- ««ª½«á®y¼Ğ
-    constant V_ACTIVE_VIDEO : integer := 480; -- Åã¥Ü°Ï°ª«×
-    constant V_FRONT_PORCH : integer := 10;  -- ««ª½«e®y¼Ğ
+    -- VGAåƒæ•¸å®šç¾© (640x480è§£æåº¦ï¼Œ60Hzåˆ·æ–°ç‡)
+    constant H_SYNC_CYCLES : integer := 96;  -- æ°´å¹³åŒæ­¥è„ˆå¯¬
+    constant H_BACK_PORCH : integer := 48;   -- æ°´å¹³å¾Œåº§æ¨™
+    constant H_ACTIVE_VIDEO : integer := 640; -- é¡¯ç¤ºå€å¯¬åº¦
+    constant H_FRONT_PORCH : integer := 16;  -- æ°´å¹³å‰åº§æ¨™
+    constant V_SYNC_CYCLES : integer := 2;   -- å‚ç›´åŒæ­¥è„ˆå¯¬
+    constant V_BACK_PORCH : integer := 33;   -- å‚ç›´å¾Œåº§æ¨™
+    constant V_ACTIVE_VIDEO : integer := 480; -- é¡¯ç¤ºå€é«˜åº¦
+    constant V_FRONT_PORCH : integer := 10;  -- å‚ç›´å‰åº§æ¨™
     signal divclk:STD_LOGIC_VECTOR(1 downto 0);
     signal fclk:STD_LOGIC;
-    signal h_count : integer range 0 to 799 := 0;  -- ¤ô¥­­p¼Æ¾¹
-    signal v_count : integer range 0 to 524 := 0;  -- ««ª½­p¼Æ¾¹
-    signal random_color : STD_LOGIC_VECTOR(2 downto 0) := "000"; -- ÀH¾÷­I´ºÃC¦â
+    signal h_count : integer range 0 to 799 := 0;  -- æ°´å¹³è¨ˆæ•¸å™¨
+    signal v_count : integer range 0 to 524 := 0;  -- å‚ç›´è¨ˆæ•¸å™¨
+    signal random_color : STD_LOGIC_VECTOR(2 downto 0) := "000"; -- éš¨æ©ŸèƒŒæ™¯é¡è‰²
 begin
     process(fclk, rst_n)
     begin
@@ -49,37 +49,37 @@ begin
         end if;
     end process;
 
-    -- ¤ô¥­¦P¨B«H¸¹©M««ª½¦P¨B«H¸¹
+    -- æ°´å¹³åŒæ­¥ä¿¡è™Ÿå’Œå‚ç›´åŒæ­¥ä¿¡è™Ÿ
     hsync <= '0' when (h_count < H_SYNC_CYCLES) else '1';
     vsync <= '0' when (v_count < V_SYNC_CYCLES) else '1';
 
-    -- ÀH¾÷­I´ºÃC¦â¥Í¦¨ (¥i¥H§ï¬°§óºë²ÓªºÀH¾÷ÅŞ¿è)
+    -- éš¨æ©ŸèƒŒæ™¯é¡è‰²ç”Ÿæˆ (å¯ä»¥æ”¹ç‚ºæ›´ç²¾ç´°çš„éš¨æ©Ÿé‚è¼¯)
     random_color <= "001" when (h_count = 100 and v_count = 100) else random_color;
 
-    -- ¶ê§ÎªºÃ¸»sÅŞ¿è
-    -- ¶ê¤ß¦ì¸m (320, 240)¡A¥b®| 100
+    -- åœ“å½¢çš„ç¹ªè£½é‚è¼¯
+    -- åœ“å¿ƒä½ç½® (320, 240)ï¼ŒåŠå¾‘ 100
     --    if ( (h_count - 320) * (h_count - 320) ) +(  (v_count - 240) * (v_count - 240) ) <= 100 * 100 then
 process(fclk, rst_n)
     begin    
-   if ( (h_count - 480) * (h_count - 480) ) +(  (v_count - 360) * (v_count - 360) ) <=15 * 20 then
+   if ( (h_count - 480) * (h_count - 480) ) +(  (v_count - 360) * (v_count - 360) ) <=20 * 20 then
         red   <= "0000";
-        green <= "1111";  -- ºñ¦â¶ê§Î
+        green <= "1111";  -- ç¶ è‰²åœ“å½¢
         blue  <= "0000";
     else
-        -- ­I´ºÃC¦â³]¸m¬°ÀH¾÷ÃC¦â
+        -- èƒŒæ™¯é¡è‰²è¨­ç½®ç‚ºéš¨æ©Ÿé¡è‰²
         case random_color is
             when "000" => 
                 red   <= "0000";
                 green <= "0000";
-                blue  <= "1111"; -- ÂÅ¦â­I´º
+                blue  <= "1111"; -- è—è‰²èƒŒæ™¯
             when "001" => 
                 red   <= "1111";
                 green <= "0000";
-                blue  <= "0000"; -- ¬õ¦â­I´º
+                blue  <= "0000"; -- ç´…è‰²èƒŒæ™¯
             when others => 
                 red   <= "0000";
                 green <= "1111";
-                blue  <= "0000"; -- ¹w³]ºñ¦â­I´º
+                blue  <= "0000"; -- é è¨­ç¶ è‰²èƒŒæ™¯
         end case;
     end if;
    end process;    
