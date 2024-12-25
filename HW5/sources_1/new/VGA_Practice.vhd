@@ -28,7 +28,6 @@ architecture Behavioral of vga_controller is
     signal fclk:STD_LOGIC;
     signal h_count : integer range 0 to 799 := 0;  -- 水平計數器
     signal v_count : integer range 0 to 524 := 0;  -- 垂直計數器
-    signal random_color : STD_LOGIC_VECTOR(2 downto 0) := "000"; -- 隨機背景顏色
 begin
     process(fclk, rst_n)
     begin
@@ -53,8 +52,6 @@ begin
     hsync <= '0' when (h_count < H_SYNC_CYCLES) else '1';
     vsync <= '0' when (v_count < V_SYNC_CYCLES) else '1';
 
-    -- 隨機背景顏色生成 (可以改為更精細的隨機邏輯)
-    random_color <= "001" when (h_count = 100 and v_count = 100) else random_color;
 
     -- 圓形的繪製邏輯
     -- 圓心位置 (320, 240)，半徑 100
@@ -65,22 +62,6 @@ process(fclk, rst_n)
         red   <= "0000";
         green <= "1111";  -- 綠色圓形
         blue  <= "0000";
-    else
-        -- 背景顏色設置為隨機顏色
-        case random_color is
-            when "000" => 
-                red   <= "0000";
-                green <= "0000";
-                blue  <= "1111"; -- 藍色背景
-            when "001" => 
-                red   <= "1111";
-                green <= "0000";
-                blue  <= "0000"; -- 紅色背景
-            when others => 
-                red   <= "0000";
-                green <= "1111";
-                blue  <= "0000"; -- 預設綠色背景
-        end case;
     end if;
    end process;    
 fd:process(clk ,rst_n)
