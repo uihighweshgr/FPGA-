@@ -9,7 +9,7 @@
 
 # HW5  [vga_bonus](https://www.youtube.com/watch?v=AdTL2_zqUU8)
 
-# HW5-2 [vga_pingpong]([https://youtube.com/shorts/tOnv0RMuBEo?si=bTVY1dGMhjbBNnCr)](https://www.youtube.com/watch?v=OKdsW8d9eu4)
+# HW5-2 [vga_pingpong](https://www.youtube.com/watch?v=OKdsW8d9eu4)
 
 
 PDF下方有more pages代表還有要記得點
