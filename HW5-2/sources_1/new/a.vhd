@@ -9,11 +9,11 @@ entity vga_controller is
            i_left_button    : in STD_LOGIC; --s5
            i_right_button   : in STD_LOGIC; --s9
            o_count          : out STD_LOGIC_VECTOR(7 downto 0);
-           hsync     : out STD_LOGIC;       -- ¤ô¥­¦P¨B«H¸¹
-           vsync     : out STD_LOGIC;       -- ««ª½¦P¨B«H¸¹
-           red       : out STD_LOGIC_VECTOR (3 downto 0);  -- ¬õ¦âÃC¦â¤À¶q
-           green     : out STD_LOGIC_VECTOR (3 downto 0);  -- ºñ¦âÃC¦â¤À¶q
-           blue      : out STD_LOGIC_VECTOR (3 downto 0)   -- ÂÅ¦âÃC¦â¤À¶q
+           hsync     : out STD_LOGIC;       -- æ°´å¹³åŒæ­¥ä¿¡è™Ÿ
+           vsync     : out STD_LOGIC;       -- å‚ç›´åŒæ­¥ä¿¡è™Ÿ
+           red       : out STD_LOGIC_VECTOR (3 downto 0);  -- ç´…è‰²é¡è‰²åˆ†é‡
+           green     : out STD_LOGIC_VECTOR (3 downto 0);  -- ç¶ è‰²é¡è‰²åˆ†é‡
+           blue      : out STD_LOGIC_VECTOR (3 downto 0)   -- è—è‰²é¡è‰²åˆ†é‡
            );
 end vga_controller;
 
@@ -29,26 +29,26 @@ signal counter_move_state: counter_state;
 signal prestate: counter_state;
     
     signal   x: integer;
-    -- VGA°Ñ¼Æ©w¸q (640x480¸ÑªR«×¡A60Hz¨ê·s²v)
-    constant xplus         : integer := 100;
-    constant H_SYNC_CYCLES : integer := 96;  -- ¤ô¥­¦P¨B¯ß¼e
-    constant H_BACK_PORCH : integer := 48;   -- ¤ô¥­«á®y¼Ğ
-    constant H_ACTIVE_VIDEO : integer := 640; -- Åã¥Ü°Ï¼e«×
-    constant H_FRONT_PORCH : integer := 16;  -- ¤ô¥­«e®y¼Ğ
-    constant V_SYNC_CYCLES : integer := 2;   -- ««ª½¦P¨B¯ß¼e
-    constant V_BACK_PORCH : integer := 33;   -- ««ª½«á®y¼Ğ
-    constant V_ACTIVE_VIDEO : integer := 480; -- Åã¥Ü°Ï°ª«×
-    constant V_FRONT_PORCH : integer := 10;  -- ««ª½«e®y¼Ğ
+    -- VGAåƒæ•¸å®šç¾© (640x480è§£æåº¦ï¼Œ60Hzåˆ·æ–°ç‡)
+    constant xplus         : integer := 145;
+    constant H_SYNC_CYCLES : integer := 96;  -- æ°´å¹³åŒæ­¥è„ˆå¯¬
+    constant H_BACK_PORCH : integer := 48;   -- æ°´å¹³å¾Œåº§æ¨™
+    constant H_ACTIVE_VIDEO : integer := 640; -- é¡¯ç¤ºå€å¯¬åº¦
+    constant H_FRONT_PORCH : integer := 16;  -- æ°´å¹³å‰åº§æ¨™
+    constant V_SYNC_CYCLES : integer := 2;   -- å‚ç›´åŒæ­¥è„ˆå¯¬
+    constant V_BACK_PORCH : integer := 33;   -- å‚ç›´å¾Œåº§æ¨™
+    constant V_ACTIVE_VIDEO : integer := 480; -- é¡¯ç¤ºå€é«˜åº¦
+    constant V_FRONT_PORCH : integer := 10;  -- å‚ç›´å‰åº§æ¨™
     signal fclk:STD_LOGIC;
-    signal h_count : integer range 0 to 799 := 0;  -- ¤ô¥­­p¼Æ¾¹
-    signal v_count : integer range 0 to 524 := 0;  -- ««ª½­p¼Æ¾¹
+    signal h_count : integer range 0 to 799 := 0;  -- æ°´å¹³è¨ˆæ•¸å™¨
+    signal v_count : integer range 0 to 524 := 0;  -- å‚ç›´è¨ˆæ•¸å™¨
 
 begin
 o_count <= count;
 
 
 
-    -- ¤ô¥­©M««ª½­p¼Æ¾¹§ó·s
+    -- æ°´å¹³å’Œå‚ç›´è¨ˆæ•¸å™¨æ›´æ–°
     process(fclk, i_rst)
     begin
         if i_rst = '0' then
@@ -68,27 +68,27 @@ o_count <= count;
         end if;
     end process;
 
-    -- ¤ô¥­¦P¨B«H¸¹©M««ª½¦P¨B«H¸¹
+    -- æ°´å¹³åŒæ­¥ä¿¡è™Ÿå’Œå‚ç›´åŒæ­¥ä¿¡è™Ÿ
     hsync <= '0' when (h_count < H_SYNC_CYCLES) else '1';
     vsync <= '0' when (v_count < V_SYNC_CYCLES) else '1';
 
-    -- ¶ê§ÎªºÃ¸»sÅŞ¿è
+    -- åœ“å½¢çš„ç¹ªè£½é‚è¼¯
     process(fclk, i_rst)
     begin    
         if i_rst = '0' then
             red   <= "0000";
             green <= "0000";
-            blue  <= "0000";  -- ªì©l¬°¶Â¦â
+            blue  <= "0000";  -- åˆå§‹ç‚ºé»‘è‰²
         elsif rising_edge(fclk) then
-            -- ¶ê¤ß¦ì¸m (480, 360)¡A¥b®| 15
+            -- åœ“å¿ƒä½ç½® (480, 360)ï¼ŒåŠå¾‘ 15
             if ( (  h_count - x -xplus) * ( h_count - x-xplus) + (v_count - 360) * (v_count - 360) <= 15 * 15 ) then
-                red   <= "0000";         -- ¬õ¦â¬° 0000
-                green <= "1111";         -- ºñ¦â¬° 1111
-                blue  <= "0000";         -- ÂÅ¦â¬° 0000
+                red   <= "0000";         -- ç´…è‰²ç‚º 0000
+                green <= "1111";         -- ç¶ è‰²ç‚º 1111
+                blue  <= "0000";         -- è—è‰²ç‚º 0000
             else
-                red   <= "0100";         -- Àq»{¬°¶Â¦â
-                green <= "1000";         -- Àq»{¬°¶Â¦â
-                blue  <= "0011";         -- Àq»{¬°¶Â¦â
+                red   <= "0100";         -- é»˜èªç‚ºé»‘è‰²
+                green <= "1000";         -- é»˜èªç‚ºé»‘è‰²
+                blue  <= "0011";         -- é»˜èªç‚ºé»‘è‰²
             end if;
         end if;
     end process;
@@ -102,15 +102,15 @@ begin
     elsif led_clk' event and led_clk = '1' then
         case counter_move_state is 
             when counter_is_counting_left =>
-                x <= x-60; --????
+                x <= x-65; --????
             when counter_is_counting_right =>
-               x <= x+60; --?k??
+               x <= x+65; --?k??
             when right_win =>
                 null; --??????                         
             when left_win =>    
                 null;  --??????
             when left_ready_serve =>
-                x <=60; --?????l??                          
+                x <=65; --?????l??                          
             when right_ready_serve =>
                 x <=540; --?k???l??
             when others =>
@@ -232,7 +232,7 @@ begin
 end process;
 
 
-    -- ®ÉÄÁ¤ÀÀW³B²z (¬°¤F²£¥Ífclk«H¸¹)
+    -- æ™‚é˜åˆ†é »è™•ç† (ç‚ºäº†ç”¢ç”Ÿfclkä¿¡è™Ÿ)
   fd:process(i_clk ,i_rst)
 begin
 if i_rst = '0' then 
