@@ -8,9 +8,9 @@ entity vga_controller is
            rst_n     : in  STD_LOGIC;       -- 重置信號
            hsync     : out STD_LOGIC;       -- 水平同步信號
            vsync     : out STD_LOGIC;       -- 垂直同步信號
-           red       : out STD_LOGIC_VECTOR (3 downto 0);  -- 紅色顏色分量
-           green     : out STD_LOGIC_VECTOR (3 downto 0);  -- 綠色顏色分量
-           blue      : out STD_LOGIC_VECTOR (3 downto 0)   -- 藍色顏色分量
+           red       : out STD_LOGIC_VECTOR (3 downto 0);  -- 紅色分量
+           green     : out STD_LOGIC_VECTOR (3 downto 0);  -- 綠色分量
+           blue      : out STD_LOGIC_VECTOR (3 downto 0)   -- 藍色分量
            );
 end vga_controller;
 
@@ -24,11 +24,13 @@ architecture Behavioral of vga_controller is
     constant V_BACK_PORCH : integer := 33;   -- 垂直後座標
     constant V_ACTIVE_VIDEO : integer := 480; -- 顯示區高度
     constant V_FRONT_PORCH : integer := 10;  -- 垂直前座標
-    signal divclk:STD_LOGIC_VECTOR(1 downto 0);
-    signal fclk:STD_LOGIC;
+
+    signal divclk : STD_LOGIC_VECTOR(1 downto 0);
+    signal fclk   : STD_LOGIC;
     signal h_count : integer range 0 to 799 := 0;  -- 水平計數器
     signal v_count : integer range 0 to 524 := 0;  -- 垂直計數器
 begin
+    -- 水平與垂直計數器
     process(fclk, rst_n)
     begin
         if rst_n = '0' then
@@ -52,25 +54,36 @@ begin
     hsync <= '0' when (h_count < H_SYNC_CYCLES) else '1';
     vsync <= '0' when (v_count < V_SYNC_CYCLES) else '1';
 
-
-    -- 圓形的繪製邏輯
-    -- 圓心位置 (320, 240)，半徑 100
-    --    if ( (h_count - 320) * (h_count - 320) ) +(  (v_count - 240) * (v_count - 240) ) <= 100 * 100 then
-process(fclk, rst_n)
+    -- 顏色繪製 (圓形邏輯)
+    process(fclk, rst_n)
     begin    
-   if ( (h_count - 480) * (h_count - 480) ) +(  (v_count - 360) * (v_count - 360) ) <=20 * 20 then
-        red   <= "0000";
-        green <= "1111";  -- 綠色圓形
-        blue  <= "0000";
-    end if;
-   end process;    
-fd:process(clk ,rst_n)
-begin
-if (rst_n = '0') then 
-    divclk <= (others => '0');
-elsif (rising_edge(clk)) then
-    divclk <= divclk +1 ;
-end if;
-end process fd;
-fclk <= divclk(1);      
+        if rst_n = '0' then
+            red   <= "0000";
+            green <= "0000";
+            blue  <= "0000";  -- 初始化為黑色
+        elsif rising_edge(fclk) then
+            -- 判斷是否在圓形內 (圓心為 480,360，半徑為 20)
+            if ( (h_count - 480) * (h_count - 480) + (v_count - 360) * (v_count - 360) ) <= 20 * 20 then
+                red   <= "0000";
+                green <= "1111";  -- 綠色圓形
+                blue  <= "0000";
+            else
+                red   <= "0000";
+                green <= "0000";
+                blue  <= "0000";  -- 圓形外設為黑色
+            end if;
+        end if;
+    end process;
+
+    -- 時鐘分頻
+    fd: process(clk, rst_n)
+    begin
+        if rst_n = '0' then 
+            divclk <= (others => '0');
+        elsif rising_edge(clk) then
+            divclk <= divclk + 1;
+        end if;
+    end process;
+
+    fclk <= divclk(1); -- 分頻信號
 end Behavioral;
