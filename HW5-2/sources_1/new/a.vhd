@@ -102,17 +102,17 @@ begin
     elsif led_clk' event and led_clk = '1' then
         case counter_move_state is 
             when counter_is_counting_left =>
-                x <= x-65; --????
+                x <= x-65; 
             when counter_is_counting_right =>
-               x <= x+65; --?k??
+               x <= x+65; 
             when right_win =>
-                null; --??????                         
+                null;                        
             when left_win =>    
-                null;  --??????
+                null;  
             when left_ready_serve =>
-                x <=65; --?????l??                          
+                x <=65;                        
             when right_ready_serve =>
-                x <=540; --?k???l??
+                x <=540; 
             when others =>
                 null;
         end case;
