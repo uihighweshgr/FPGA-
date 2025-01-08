@@ -33,8 +33,8 @@ signal prestate: counter_state;
     constant xplus         : integer := 145;
     constant H_SYNC_CYCLES : integer := 96;  -- 水平同步脈寬
     constant H_BACK_PORCH : integer := 48;   -- 水平後座標
-    constant H_ACTIVE_VIDEO : integer := 640; -- 顯示區寬度
     constant H_FRONT_PORCH : integer := 16;  -- 水平前座標
+    constant H_ACTIVE_VIDEO : integer := 640; -- 顯示區寬度
     constant V_SYNC_CYCLES : integer := 2;   -- 垂直同步脈寬
     constant V_BACK_PORCH : integer := 33;   -- 垂直後座標
     constant V_ACTIVE_VIDEO : integer := 480; -- 顯示區高度
