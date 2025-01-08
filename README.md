@@ -1,15 +1,15 @@
-# HW1  [counter](https://www.youtube.com/shorts/73Q8eGjqQkQ)
+# HW1  [counter影片](https://www.youtube.com/shorts/73Q8eGjqQkQ)
 
 
 # HW2
 
-# HW3  [pwm_breath](https://youtube.com/shorts/ERdG7_-1m0k?si=1AEDhDLYroMPUOqn)
+# HW3  [pwm_breath影片](https://youtube.com/shorts/ERdG7_-1m0k?si=1AEDhDLYroMPUOqn)
 
-# HW4  [pingpong](https://youtube.com/shorts/tOnv0RMuBEo?si=bTVY1dGMhjbBNnCr)
+# HW4  [pingpong影片](https://youtube.com/shorts/tOnv0RMuBEo?si=bTVY1dGMhjbBNnCr)
 
-# HW5  [vga_bonus](https://www.youtube.com/watch?v=AdTL2_zqUU8)
+# HW5  [vga_bonus影片](https://www.youtube.com/watch?v=AdTL2_zqUU8)
 
-# HW5-2 [vga_pingpong](https://www.youtube.com/watch?v=OKdsW8d9eu4)
+# HW5-2 [vga_pingpong影片](https://www.youtube.com/watch?v=OKdsW8d9eu4)
 
 
 PDF下方有more pages代表還有要記得點
