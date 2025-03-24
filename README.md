@@ -1,4 +1,4 @@
-# C111112132 蕭詠釗
+# 蕭詠釗 VHDL
 # HW1  [counter影片](https://www.youtube.com/shorts/73Q8eGjqQkQ)
 
 
