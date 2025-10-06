@@ -13,6 +13,7 @@
 
 # HW5-2 [vga_pingpong影片](https://www.youtube.com/watch?v=N2ZrpRbX3pI)
 
+HW6 未完成
 PDF下方有more pages代表還有要記得點
 
 
